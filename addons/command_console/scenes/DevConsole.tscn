@@ -1,5 +1,8 @@
 [gd_scene format=3 uid="uid://bmvr8m1d3khqn"]
 
+[ext_resource type="Script" uid="uid://epdrqhntb6bx" path="res://addons/command_console/Console/DevConsoleUI.cs" id="1_p6mku"]
+[ext_resource type="PackedScene" uid="uid://b5aluiqikjeeb" path="res://addons/command_console/Scenes/CommandSuggestions.tscn" id="2_2wwgv"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4x6u8"]
 bg_color = Color(0.11764706, 0.11764706, 0.11764706, 0.9411765)
 border_width_left = 2
@@ -14,7 +17,7 @@ corner_radius_bottom_left = 4
 shadow_color = Color(0, 0, 0, 0.5019608)
 shadow_size = 5
 
-[node name="ConsoleUI" type="Control" unique_id=211700747]
+[node name="ConsoleUI" type="Control" unique_id=211700747 node_paths=PackedStringArray("inputField", "outputText", "suggestionContainer", "suggestionVBox", "debugToggle", "infoToggle", "warningToggle", "errorToggle", "clearButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,6 +26,17 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 10
+script = ExtResource("1_p6mku")
+inputField = NodePath("PanelContainer/HBoxContainer/Console Vbox/TextInput")
+outputText = NodePath("PanelContainer/HBoxContainer/Console Vbox/Output Box")
+suggestionContainer = NodePath("Suggestions Panel")
+suggestionVBox = NodePath("Suggestions Panel/MarginContainer/SuggestionsList")
+suggestionItemScene = ExtResource("2_2wwgv")
+debugToggle = NodePath("PanelContainer/HBoxContainer/MarginContainer/Options Vbox/Debug Level")
+infoToggle = NodePath("PanelContainer/HBoxContainer/MarginContainer/Options Vbox/Info Level")
+warningToggle = NodePath("PanelContainer/HBoxContainer/MarginContainer/Options Vbox/Warning Level")
+errorToggle = NodePath("PanelContainer/HBoxContainer/MarginContainer/Options Vbox/Error Level")
+clearButton = NodePath("PanelContainer/HBoxContainer/MarginContainer/Options Vbox/Clear Button")
 
 [node name="Suggestions Panel" type="ScrollContainer" parent="." unique_id=1204167293]
 custom_minimum_size = Vector2(400, 200)

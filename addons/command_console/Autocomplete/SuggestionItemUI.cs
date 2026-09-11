@@ -1,14 +1,14 @@
 ﻿using Godot;
 namespace HWG.CommandConsole.Autocomplete;
 
-public partial class SuggestionItemUI : Control
+public partial class SuggestionItemUI : PanelContainer
 {
-    private PanelContainer container;
-    private RichTextLabel mainLabel;
-    private RichTextLabel descriptionLabel;
+    [Export] private PanelContainer container;
+    [Export] private RichTextLabel mainLabel;
+    [Export] private RichTextLabel descriptionLabel;
     private static readonly StyleBoxFlat selectedStyle = new()
         { BgColor = new Color(0.3f, 0.3f, 0.7f, 0.5f) };
-    private static readonly StyleBoxEmpty normalStyle = new();
+    private static readonly StyleBoxFlat normalStyle = new();
     
     private static readonly StringName panel = "panel";
 
