@@ -5,71 +5,43 @@ using HWG.CommandConsole.Commands;
 using HWG.CommandConsole.Console;
 namespace HWG.CommandConsole.Autocomplete;
 
-public class ConsoleAutocomplete
+public static class ConsoleAutocomplete
 {
     private const float EXACT_MATCH_BONUS = 100f;
     private const float PREFIX_MATCH_BONUS = 50f;
     private const float CONTAINS_MATCH_BONUS = 25f;
     private const float SEQUENCE_MATCH_BONUS = 10f;
 
-    public List<AutocompleteSuggestion> GetSuggestions(string input, int maxResults = 10)
+    public static void FillSuggestions(string input, List<AutocompleteSuggestion> results, int maxResults = 10)
     {
-        var parseResult = ConsoleInputParser.Parse(input);
+        results.Clear();
         
+        var parseResult = ConsoleInputParser.Parse(input);
+
         if (string.IsNullOrWhiteSpace(input))
         {
-            return
-            [
-                .. DevConsole.GetAllCommands()
-                    .Values
-                    .OrderBy(cmd => cmd.FullName)
-                    .Take(maxResults)
-                    .Select(cmd => new AutocompleteSuggestion
-                {
-                    Text = cmd.FullName,
-                    DisplayText = cmd.FullName,
-                    Description = cmd.Description,
-                    Score = 0,
-                    CommandInfo = cmd,
-                    Type = AutocompleteSuggestionType.Command
-                })
-            ];
+            return;
         }
-        
-        var suggestions = new List<AutocompleteSuggestion>();
 
         if (parseResult.IsTypingCommandName)
         {
-            suggestions.AddRange(GetCommandSuggestions(parseResult.CommandName, maxResults));
+            FillCommandSuggestions(parseResult.CommandName, results, maxResults);
         }
         else
         {
-            // Typing parameters - show command signature/help row
             var command = DevConsole.GetCommand(parseResult.CommandName);
             if (command != null)
-                suggestions.Add(CreateSignatureSuggestions(command, parseResult.CurrentArgumentIndex));
+                results.Add(CreateSignatureSuggestions(command, parseResult.CurrentArgumentIndex));
         }
-        
-        return [
-            .. suggestions
-                .OrderByDescending(s => s.Score)
-                .ThenBy(s => s.Text)
-                .Take(maxResults)
-        ];
     }
     
-    public string AutoComplete(string currentInput, List<AutocompleteSuggestion> suggestions)
+    public static string AutoComplete(string currentInput, AutocompleteSuggestion suggestion)
     {
-        if (suggestions.Count == 0) 
-            return currentInput;
-
-        var best = suggestions[0];
-
-        return best.Type switch
+        return suggestion.Type switch
         {
             AutocompleteSuggestionType.Signature => currentInput,
-            AutocompleteSuggestionType.Command => best.Text + " ",
-            AutocompleteSuggestionType.ParameterValue => ApplyParameterSuggestion(currentInput, best),
+            AutocompleteSuggestionType.Command => suggestion.Text + " ",
+            AutocompleteSuggestionType.ParameterValue => ApplyParameterSuggestion(currentInput, suggestion),
             _ => currentInput
         };
     }
@@ -92,34 +64,50 @@ public class ConsoleAutocomplete
         return string.Join(" ", tokens.Where(token => !string.IsNullOrEmpty(token))) + " ";
     }
 
-    private static List<AutocompleteSuggestion> GetCommandSuggestions(string input, int maxResults)
+    private static void FillCommandSuggestions(string input, List<AutocompleteSuggestion> results, int maxResults)
     {
-        var suggestions = new List<AutocompleteSuggestion>();
-
         foreach (var command in DevConsole.GetAllCommands().Values)
         {
             float score = CalculateFuzzyScore(input, command.FullName);
             if (score <= 0)
                 continue;
-            
-            suggestions.Add(new AutocompleteSuggestion
+
+            InsertSuggestionSorted(results, new AutocompleteSuggestion
             {
                 Text = command.FullName,
                 DisplayText = HighlightMatches(command.FullName, input),
                 Description = command.Description,
-                Score = score,
+                Score = 0,
                 CommandInfo = command,
                 Type = AutocompleteSuggestionType.Command
-            });
-            
+            }, maxResults);
         }
-        
-        return [
-            .. suggestions
-                .OrderByDescending(s => s.Score)
-                .ThenBy(s => s.Text)
-                .Take(maxResults)
-        ];
+    }
+    
+    private static void InsertSuggestionSorted(List<AutocompleteSuggestion> destination, AutocompleteSuggestion suggestion, int maxResults)
+    {
+        int insertIndex = destination.Count;
+
+        for (int i = 0; i < destination.Count; i++)
+        {
+            var existing = destination[i];
+
+            if (suggestion.Score > existing.Score 
+             || suggestion.Score.Equals(existing.Score) 
+             && string.CompareOrdinal(suggestion.Text, existing.Text) < 0)
+            {
+                insertIndex = i;
+                break;
+            }
+        }
+
+        if (insertIndex >= maxResults)
+            return;
+
+        destination.Insert(insertIndex, suggestion);
+
+        if (destination.Count > maxResults)
+            destination.RemoveAt(destination.Count - 1);
     }
     
     private static string HighlightMatches(string target, string input)
@@ -199,7 +187,7 @@ public class ConsoleAutocomplete
             inputIndex++;
         }
         
-        if (inputIndex == input.Length)
+        if (inputIndex != input.Length)
             indices.Clear();
         
         return indices;
