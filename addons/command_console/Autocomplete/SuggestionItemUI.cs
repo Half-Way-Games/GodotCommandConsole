@@ -15,6 +15,9 @@ public partial class SuggestionItemUI : PanelContainer
     {
         if (isSelected)
             container.AddThemeStyleboxOverride(panel,  selectedStyle);
+        else
+            container.RemoveThemeStyleboxOverride(panel);
+        
     }
 
     public void SetLabelText(string text)

@@ -77,7 +77,7 @@ public static class ConsoleAutocomplete
                 Text = command.FullName,
                 DisplayText = HighlightMatches(command.FullName, input),
                 Description = command.Description,
-                Score = 0,
+                Score = score,
                 CommandInfo = command,
                 Type = AutocompleteSuggestionType.Command
             }, maxResults);
