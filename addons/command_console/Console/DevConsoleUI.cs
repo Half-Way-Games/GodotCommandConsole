@@ -21,6 +21,8 @@ public partial class DevConsoleUI : Control
     [Export] private CheckBox errorToggle;
     [Export] private Button clearButton;
     
+    public static DevConsoleUI Instance { get; private set; }
+    
     private readonly List<AutocompleteSuggestion> currentSuggestions = new(MAX_SUGGESTIONS);
     private SuggestionItemUI[] suggestionItems = new SuggestionItemUI[MAX_SUGGESTIONS];
     private int selectedSuggestionIndex = -1;
@@ -46,6 +48,14 @@ public partial class DevConsoleUI : Control
 
     public override void _Ready()
     {
+        if (Instance != null)
+        {
+            Log.Error("DevConsoleUI already instantiated. The console is added automatically as an autoload, it does not need to be instantiated manually.");
+            QueueFree();
+            return;
+        }
+        Instance = this;
+        
         inputField.TextChanged += OnInputTextChanged;
         inputField.TextSubmitted += OnInputSubmitted;
         inputField.GuiInput += OnInputGuiInput;

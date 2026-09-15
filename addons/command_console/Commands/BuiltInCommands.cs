@@ -53,6 +53,6 @@ public static class BuiltInCommands
     [ConsoleCommand(Description = "Clears the console window")]
     public static void Clear()
     {
-        // TODO: Use the singleton reference to the console window UI
+        DevConsoleUI.Instance.Clear();
     }
 }
