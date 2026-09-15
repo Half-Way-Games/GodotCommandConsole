@@ -1,21 +1,25 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using HWG.CommandConsole.Console;
 namespace HWG.CommandConsole.Commands;
 
 public static class BuiltInCommands
 {
+    private static readonly StringBuilder output = new();
+    
     [ConsoleCommand(Description = "Lists all available commands")]
     public static void Help(string filter = "")
     {
+        output.Clear();
         var commands = DevConsole.GetAllCommands();
         bool hasFilter = !string.IsNullOrWhiteSpace(filter);
 
         if (!hasFilter)
         {
-            Log.Info($"Available commands ({commands.Count})");
-            Log.Info("Type 'help <search>' for commands matching that search");
-            Log.Info("─────────────────────────────────────");
+            output.AppendLine($"Available commands ({commands.Count})");
+            output.AppendLine("Type 'help <search>' for commands matching that search");
+            output.AppendLine("─────────────────────────────────────");
         }
         
         var sortedCommands = commands.Values.OrderBy(c => c.FullName);
@@ -39,15 +43,16 @@ public static class BuiltInCommands
                 ? $" → {command.Description}" 
                 : "";
             
-            Log.Info($"\t{command.FullName}{paramInfo}{description}");
+            output.AppendLine($"\t{command.FullName}{paramInfo}{description}");
             matchCount++;
         }
 
-        Log.Info("─────────────────────────────────────");
+        output.AppendLine("─────────────────────────────────────");
         if (hasFilter)
         {
-            Log.Info($"Found {matchCount} matching command(s) for '{filter}'");
+            output.AppendLine($"Found {matchCount} matching command(s) for '{filter}'");
         }
+        Log.Info(output.ToString());
     }
 
     [ConsoleCommand(Description = "Clears the console window")]

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bmvr8m1d3khqn"]
 
 [ext_resource type="Script" uid="uid://epdrqhntb6bx" path="res://addons/command_console/Console/DevConsoleUI.cs" id="1_p6mku"]
-[ext_resource type="PackedScene" uid="uid://b5aluiqikjeeb" path="res://addons/command_console/Scenes/CommandSuggestions.tscn" id="2_2wwgv"]
+[ext_resource type="PackedScene" uid="uid://b5aluiqikjeeb" path="res://addons/command_console/scenes/CommandSuggestions.tscn" id="2_2wwgv"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4x6u8"]
 bg_color = Color(0.11764706, 0.11764706, 0.11764706, 0.9411765)
@@ -133,7 +133,7 @@ theme_override_colors/icon_hover_pressed_color = Color(0.8901961, 0.8901961, 0.8
 theme_override_colors/checkbox_checked_color = Color(0.85490197, 0.85490197, 0.85490197, 1)
 theme_override_colors/checkbox_unchecked_color = Color(0.85490197, 0.85490197, 0.85490197, 1)
 button_pressed = true
-text = "Toggle Debug"
+text = "Debug"
 
 [node name="Info Level" type="CheckBox" parent="PanelContainer/HBoxContainer/MarginContainer/Options Vbox" unique_id=317260505]
 layout_mode = 2
@@ -145,7 +145,7 @@ theme_override_colors/font_hover_pressed_color = Color(0.7372549, 0.87058824, 1,
 theme_override_colors/checkbox_checked_color = Color(0.7372549, 0.87058824, 1, 1)
 theme_override_colors/checkbox_unchecked_color = Color(0.7372549, 0.87058824, 1, 1)
 button_pressed = true
-text = "Toggle Info"
+text = "Info"
 icon_alignment = 1
 
 [node name="Warning Level" type="CheckBox" parent="PanelContainer/HBoxContainer/MarginContainer/Options Vbox" unique_id=1875791749]
@@ -158,7 +158,7 @@ theme_override_colors/font_hover_pressed_color = Color(0.9529412, 0.84313726, 0,
 theme_override_colors/checkbox_checked_color = Color(1, 0.9529412, 0.6666667, 1)
 theme_override_colors/checkbox_unchecked_color = Color(1, 0.9529412, 0.6666667, 1)
 button_pressed = true
-text = "Toggle Warning"
+text = "Warning"
 
 [node name="Error Level" type="CheckBox" parent="PanelContainer/HBoxContainer/MarginContainer/Options Vbox" unique_id=47416648]
 layout_mode = 2
@@ -170,4 +170,4 @@ theme_override_colors/font_hover_pressed_color = Color(1, 0.6745098, 0.6784314, 
 theme_override_colors/checkbox_checked_color = Color(1, 0.7372549, 0.7372549, 1)
 theme_override_colors/checkbox_unchecked_color = Color(1, 0.7372549, 0.7372549, 1)
 button_pressed = true
-text = "Toggle Error"
+text = "Error"
