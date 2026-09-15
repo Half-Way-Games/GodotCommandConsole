@@ -50,12 +50,14 @@ public static class ConsoleInputParser
         var current = "";
         bool inQuotes = false;
         bool escapeNext = false;
+        bool tokenStarted = false;
 
         foreach (char character in input)
         {
             if (escapeNext)
             {
                 current += character;
+                tokenStarted = true;
                 escapeNext = false;
                 continue;
             }
@@ -64,27 +66,31 @@ public static class ConsoleInputParser
             {
                 case '\\' when inQuotes:
                     escapeNext = true;
+                    tokenStarted = true;
                     break;
                 
                 case '"':
                     inQuotes = !inQuotes;
+                    tokenStarted = true;
                     break;
                 
                 case ' ' or '\t' when !inQuotes:
-                    if (!string.IsNullOrEmpty(current))
+                    if (tokenStarted)
                     {
                         tokens.Add(current);
                         current = "";
+                        tokenStarted = false;
                     }
                     break;
                 
                 default:
                     current += character;
+                    tokenStarted = true;
                     break;
             }
         }
         
-        if (!string.IsNullOrEmpty(current))
+        if (tokenStarted)
             tokens.Add(current);
 
         return new ConsoleInputParseResult

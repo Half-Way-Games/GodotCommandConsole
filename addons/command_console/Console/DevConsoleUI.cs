@@ -193,7 +193,7 @@ public partial class DevConsoleUI : Control
             visibleCount++;
         }
 
-        for (int i = visibleCount - 1; i > +0; i--)
+        for (int i = visibleCount - 1; i >= 0; i--)
         {
             var entry = allLogEntries[visibleLogIndices[i]];
             logBuilder.AppendLine(Log.FormatLogEntry(entry));

@@ -30,7 +30,7 @@ public partial class Plugin : EditorPlugin
             Log.Info($"Command console added custom input action '{ConsoleAction}' bound to '`'");
         }
         
-        AddAutoloadSingleton("DevConsole", "res://addons/command_console/Scenes/DevConsole.tscn");
+        AddAutoloadSingleton("DevConsole", "res://addons/command_console/scenes/DevConsole.tscn");
     }
 
     public override void _ExitTree()
