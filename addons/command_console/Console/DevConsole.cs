@@ -28,9 +28,9 @@ public static class DevConsole
                 foreach (var loadedType in exception.Types.Where(t => t != null))
                     RegisterCommandsFromType(loadedType);
             }
-
-            Log.Info($"Registered {commands.Count} commands");
         }
+        
+        Log.Info($"Registered {commands.Count} commands");
     }
 
     public static bool ExecuteCommand(string input)

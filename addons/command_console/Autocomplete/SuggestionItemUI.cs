@@ -8,13 +8,13 @@ public partial class SuggestionItemUI : PanelContainer
     [Export] private RichTextLabel descriptionLabel;
     private static readonly StyleBoxFlat selectedStyle = new()
         { BgColor = new Color(0.3f, 0.3f, 0.7f, 0.5f) };
-    private static readonly StyleBoxFlat normalStyle = new();
     
     private static readonly StringName panel = "panel";
 
     public void SetSelected(bool isSelected)
     {
-        container.AddThemeStyleboxOverride(panel, isSelected ? selectedStyle :  normalStyle);
+        if (isSelected)
+            container.AddThemeStyleboxOverride(panel,  selectedStyle);
     }
 
     public void SetLabelText(string text)

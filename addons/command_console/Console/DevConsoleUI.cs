@@ -212,7 +212,6 @@ public partial class DevConsoleUI : Control
         }
 
         ConsoleAutocomplete.FillSuggestions(input, currentSuggestions, MAX_SUGGESTIONS);
-        selectedSuggestionIndex = -1;
 
         DisplaySuggestions();
     }
@@ -225,6 +224,9 @@ public partial class DevConsoleUI : Control
             return;
         }
 
+        if (selectedSuggestionIndex < 0 || selectedSuggestionIndex >= currentSuggestions.Count)
+            selectedSuggestionIndex = 0;
+        
         suggestionContainer.Visible = true;
 
         for (var i = 0; i < suggestionItems.Length; i++)
@@ -373,6 +375,14 @@ public partial class DevConsoleUI : Control
     {
         if (@event is not InputEventKey {Pressed: true} keyEvent)
             return;
+
+        if (@event.IsActionPressed(devConsoleInput))
+        {
+            HideConsole();
+            GetViewport().SetInputAsHandled();
+            return;
+        }
+        
         switch (keyEvent.Keycode)
         {
             case Key.Up:
@@ -397,7 +407,6 @@ public partial class DevConsoleUI : Control
                         AcceptSuggestion(suggestion);
                 }
                 break;
-            case Key.Quoteleft:
             case Key.Escape:
                 if (suggestionContainer.Visible)
                     HideSuggestions();

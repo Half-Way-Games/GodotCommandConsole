@@ -97,7 +97,7 @@ public static class DevConsoleLogger
     {
         var colorHex = entry.Level.GetColor();
         string timestamp = includeTimestamp ? $"[{entry.Timestamp:HH:mm:ss}] " : "";
-        string levelTag = entry.Level == LogLevel.Command ? "" : $"[{entry.Level.ToString().ToUpper()}] ";
-        return $"[color={colorHex}]{timestamp}{levelTag}{entry.Message}[/color]";
+        string caller = entry.Level == LogLevel.Command ? "" : $"[{entry.Caller}] ";
+        return $"[color={colorHex}]{timestamp}{caller} {entry.Message}[/color]";
     }
 }
