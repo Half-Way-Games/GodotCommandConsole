@@ -1,0 +1,173 @@
+[gd_scene format=3 uid="uid://bmvr8m1d3khqn"]
+
+[ext_resource type="Script" uid="uid://epdrqhntb6bx" path="res://addons/command_console/Console/DevConsoleUI.cs" id="1_p6mku"]
+[ext_resource type="PackedScene" uid="uid://b5aluiqikjeeb" path="res://addons/command_console/Scenes/CommandSuggestions.tscn" id="2_2wwgv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4x6u8"]
+bg_color = Color(0.11764706, 0.11764706, 0.11764706, 0.9411765)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3019608, 0.3019608, 0.33333334, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="ConsoleUI" type="Control" unique_id=211700747 node_paths=PackedStringArray("inputField", "outputText", "suggestionContainer", "suggestionVBox", "debugToggle", "infoToggle", "warningToggle", "errorToggle", "clearButton")]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 10
+script = ExtResource("1_p6mku")
+inputField = NodePath("PanelContainer/HBoxContainer/Console Vbox/TextInput")
+outputText = NodePath("PanelContainer/HBoxContainer/Console Vbox/Output Box")
+suggestionContainer = NodePath("Suggestions Panel")
+suggestionVBox = NodePath("Suggestions Panel/MarginContainer/SuggestionsList")
+suggestionItemScene = ExtResource("2_2wwgv")
+debugToggle = NodePath("PanelContainer/HBoxContainer/MarginContainer/Options Vbox/Debug Level")
+infoToggle = NodePath("PanelContainer/HBoxContainer/MarginContainer/Options Vbox/Info Level")
+warningToggle = NodePath("PanelContainer/HBoxContainer/MarginContainer/Options Vbox/Warning Level")
+errorToggle = NodePath("PanelContainer/HBoxContainer/MarginContainer/Options Vbox/Error Level")
+clearButton = NodePath("PanelContainer/HBoxContainer/MarginContainer/Options Vbox/Clear Button")
+
+[node name="Suggestions Panel" type="ScrollContainer" parent="." unique_id=1204167293]
+custom_minimum_size = Vector2(400, 200)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -436.0
+offset_right = 400.0
+offset_bottom = -236.0
+grow_vertical = 0
+pivot_offset = Vector2(0, 200)
+size_flags_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_4x6u8")
+follow_focus = true
+draw_focus_border = true
+
+[node name="MarginContainer" type="MarginContainer" parent="Suggestions Panel" unique_id=1901102440]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="SuggestionsList" type="VBoxContainer" parent="Suggestions Panel/MarginContainer" unique_id=1760307171]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1385282374]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -235.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_vertical = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer" unique_id=2055035316]
+layout_mode = 2
+
+[node name="Console Vbox" type="VBoxContainer" parent="PanelContainer/HBoxContainer" unique_id=465734846]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+
+[node name="TextInput" type="LineEdit" parent="PanelContainer/HBoxContainer/Console Vbox" unique_id=840366883]
+layout_mode = 2
+size_flags_vertical = 8
+placeholder_text = "Enter Command..."
+
+[node name="Output Box" type="RichTextLabel" parent="PanelContainer/HBoxContainer/Console Vbox" unique_id=507253716]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/line_separation = 0
+theme_override_constants/paragraph_separation = 2
+bbcode_enabled = true
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/HBoxContainer" unique_id=1428485961]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Options Vbox" type="VBoxContainer" parent="PanelContainer/HBoxContainer/MarginContainer" unique_id=99335777]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Options Label" type="Label" parent="PanelContainer/HBoxContainer/MarginContainer/Options Vbox" unique_id=84213783]
+layout_mode = 2
+text = "Filter Log Level"
+horizontal_alignment = 1
+
+[node name="Clear Button" type="Button" parent="PanelContainer/HBoxContainer/MarginContainer/Options Vbox" unique_id=933454687]
+layout_mode = 2
+text = "Clear Console"
+
+[node name="Debug Level" type="CheckBox" parent="PanelContainer/HBoxContainer/MarginContainer/Options Vbox" unique_id=1725679347]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85430586, 0.85430586, 0.85430586, 1)
+theme_override_colors/font_focus_color = Color(0.85490197, 0.85490197, 0.85490197, 1)
+theme_override_colors/font_pressed_color = Color(0.85490197, 0.85490197, 0.85490197, 1)
+theme_override_colors/font_hover_color = Color(0.89059, 0.89059, 0.8905901, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.8901961, 0.8901961, 0.8901961, 1)
+theme_override_colors/icon_normal_color = Color(0.85490197, 0.85490197, 0.85490197, 1)
+theme_override_colors/icon_focus_color = Color(0.85490197, 0.85490197, 0.85490197, 1)
+theme_override_colors/icon_pressed_color = Color(0.85490197, 0.85490197, 0.85490197, 1)
+theme_override_colors/icon_hover_color = Color(0.8901961, 0.8901961, 0.8901961, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.8901961, 0.8901961, 0.8901961, 1)
+theme_override_colors/checkbox_checked_color = Color(0.85490197, 0.85490197, 0.85490197, 1)
+theme_override_colors/checkbox_unchecked_color = Color(0.85490197, 0.85490197, 0.85490197, 1)
+button_pressed = true
+text = "Toggle Debug"
+
+[node name="Info Level" type="CheckBox" parent="PanelContainer/HBoxContainer/MarginContainer/Options Vbox" unique_id=317260505]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9063318, 0.95468724, 1, 1)
+theme_override_colors/font_focus_color = Color(0.90588236, 0.9529412, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.90588236, 0.9529412, 1, 1)
+theme_override_colors/font_hover_color = Color(0.73613626, 0.86918616, 0.9999998, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.7372549, 0.87058824, 1, 1)
+theme_override_colors/checkbox_checked_color = Color(0.7372549, 0.87058824, 1, 1)
+theme_override_colors/checkbox_unchecked_color = Color(0.7372549, 0.87058824, 1, 1)
+button_pressed = true
+text = "Toggle Info"
+icon_alignment = 1
+
+[node name="Warning Level" type="CheckBox" parent="PanelContainer/HBoxContainer/MarginContainer/Options Vbox" unique_id=1875791749]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9529412, 0.6666667, 1)
+theme_override_colors/font_focus_color = Color(1, 0.9529412, 0.6666667, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.9529412, 0.6666667, 1)
+theme_override_colors/font_hover_color = Color(0.9517669, 0.8442636, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.9529412, 0.84313726, 0, 1)
+theme_override_colors/checkbox_checked_color = Color(1, 0.9529412, 0.6666667, 1)
+theme_override_colors/checkbox_unchecked_color = Color(1, 0.9529412, 0.6666667, 1)
+button_pressed = true
+text = "Toggle Warning"
+
+[node name="Error Level" type="CheckBox" parent="PanelContainer/HBoxContainer/MarginContainer/Options Vbox" unique_id=47416648]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.735357, 0.735357, 1)
+theme_override_colors/font_focus_color = Color(1, 0.7372549, 0.7372549, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.7372549, 0.7372549, 1)
+theme_override_colors/font_hover_color = Color(1, 0.6757094, 0.67854744, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 0.6745098, 0.6784314, 1)
+theme_override_colors/checkbox_checked_color = Color(1, 0.7372549, 0.7372549, 1)
+theme_override_colors/checkbox_unchecked_color = Color(1, 0.7372549, 0.7372549, 1)
+button_pressed = true
+text = "Toggle Error"

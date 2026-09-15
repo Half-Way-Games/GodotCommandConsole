@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://ddldwbeg135s5"]
+
+[node name="Main" type="Node2D" unique_id=1531662925]
+
+[node name="Label" type="Label" parent="." unique_id=818144183]
+offset_right = 89.0
+offset_bottom = 23.0
+text = "Main Scene"

@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://b5aluiqikjeeb"]
+
+[ext_resource type="Script" uid="uid://sqsuvnx3om1n" path="res://addons/command_console/Autocomplete/SuggestionItemUI.cs" id="1_voydc"]
+
+[node name="PanelContainer" type="PanelContainer" unique_id=1730963026 node_paths=PackedStringArray("container", "mainLabel", "descriptionLabel")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_voydc")
+container = NodePath(".")
+mainLabel = NodePath("VBoxContainer/MainLabel")
+descriptionLabel = NodePath("VBoxContainer/Description")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=912448926]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="MainLabel" type="RichTextLabel" parent="VBoxContainer" unique_id=150275879]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+bbcode_enabled = true
+text = "Debug.help"
+fit_content = true
+scroll_active = false
+
+[node name="Description" type="RichTextLabel" parent="VBoxContainer" unique_id=1891375026]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_colors/default_color = Color(0.53333336, 0.53333336, 0.53333336, 1)
+theme_override_font_sizes/normal_font_size = 12
+bbcode_enabled = true
+text = "This is a description about the content"
+fit_content = true
+scroll_active = false
