@@ -35,7 +35,7 @@ public partial class DevConsoleUI : Control
     private readonly StringBuilder logBuilder = new();
     private readonly int[] visibleLogIndices = new int[MAX_VISIBLE_LOG_LINES];
 
-    private static readonly StringName devConsoleInput = "DevConsole";
+    private static readonly StringName devConsoleInput = "dev_console_toggle";
     private static readonly StringName escapeInput = "ui_cancel";
     
     // Queue to hold logs coming from any thread, processed in _Process

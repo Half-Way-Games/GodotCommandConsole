@@ -6,17 +6,18 @@ namespace HWG.CommandConsole;
 [Tool]
 public partial class Plugin : EditorPlugin
 {
-    private static readonly StringName ConsoleAction = "DevConsole";
+    private static readonly StringName ConsoleAction = "dev_console_toggle";
 
     public override void _EnterTree()
     {
         if (!InputMap.HasAction(ConsoleAction))
         {
-            InputMap.AddAction(ConsoleAction);
             var inputEvent = new InputEventKey
             {
                 Keycode = Key.Quoteleft
             };
+            
+            InputMap.AddAction(ConsoleAction);
             InputMap.ActionAddEvent(ConsoleAction, inputEvent);
 
             var actionSettings = new Dictionary
@@ -26,7 +27,6 @@ public partial class Plugin : EditorPlugin
             };
 
             ProjectSettings.SetSetting("input/" + ConsoleAction, actionSettings);
-            ProjectSettings.Save();
             Log.Info($"Command console added custom input action '{ConsoleAction}' bound to '`'");
         }
         
@@ -35,15 +35,6 @@ public partial class Plugin : EditorPlugin
 
     public override void _ExitTree()
     {
-        if (InputMap.HasAction(ConsoleAction))
-        {
-            InputMap.EraseAction(ConsoleAction);
-            ProjectSettings.SetSetting("input/" + ConsoleAction, new Variant());
-            ProjectSettings.Save();
-            
-            Log.Info($"Command console removed custom input action '{ConsoleAction}' bound to '`'");
-        }
-        
         RemoveAutoloadSingleton("DevConsole");
     }
 }
