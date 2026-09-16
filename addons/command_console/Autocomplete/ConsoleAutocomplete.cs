@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using HWG.CommandConsole.Commands;
 using HWG.CommandConsole.Console;
 namespace HWG.CommandConsole.Autocomplete;
@@ -272,12 +273,12 @@ public static class ConsoleAutocomplete
             return EXACT_MATCH_BONUS;
 
         if (target.StartsWith(input, StringComparison.OrdinalIgnoreCase))
-            return PREFIX_MATCH_BONUS + input.Length;
+            return Mathf.Min(PREFIX_MATCH_BONUS + input.Length, EXACT_MATCH_BONUS - 1f);
         
         if (target.Contains(input, StringComparison.OrdinalIgnoreCase))
-            return CONTAINS_MATCH_BONUS + input.Length;
+            return Mathf.Min(CONTAINS_MATCH_BONUS + input.Length, PREFIX_MATCH_BONUS - 1f);
 
-        return CalculateSequenceScore(input, target);
+        return Mathf.Min(CalculateSequenceScore(input, target), PREFIX_MATCH_BONUS - 1f);
     }
     
     private static float CalculateSequenceScore(string input, string target)
