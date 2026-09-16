@@ -136,6 +136,7 @@ public partial class DevConsoleUI : Control
     {
         outputText.Text = string.Empty;
         allLogEntries.Clear();
+        logQueue.Clear();
     }
 
     private void ShowConsole()
@@ -374,10 +375,6 @@ public partial class DevConsoleUI : Control
 
     private void OnInputSubmitted(string input)
     {
-        // Only accept suggestion if it has actual text to insert
-        if (selectedSuggestionIndex >= 0 && selectedSuggestionIndex < currentSuggestions.Count && CanAcceptSuggestion(currentSuggestions[selectedSuggestionIndex]))
-            AcceptSuggestion(currentSuggestions[selectedSuggestionIndex]);
-        else
             ExecuteCommand(input);
     }
 
@@ -407,6 +404,7 @@ public partial class DevConsoleUI : Control
                 else
                     NavigateHistory(1);
                 break;
+            case Key.Right:
             case Key.Tab:
                 if (currentSuggestions.Count > 0)
                 {
