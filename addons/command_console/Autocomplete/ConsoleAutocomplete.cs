@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using HWG.CommandConsole.Commands;
 using HWG.CommandConsole.Console;
 namespace HWG.CommandConsole.Autocomplete;
@@ -10,7 +11,8 @@ public static class ConsoleAutocomplete
     private const float EXACT_MATCH_BONUS = 100f;
     private const float PREFIX_MATCH_BONUS = 50f;
     private const float CONTAINS_MATCH_BONUS = 25f;
-    private const float SEQUENCE_MATCH_BONUS = 10f;
+    private const float SEQUENCE_MATCH_CHARACTER_BONUS = 1f;
+    private const float SEQUENCE_MATCH_CONSECUTIVE_BONUS = 2f;
 
     public static void FillSuggestions(string input, List<AutocompleteSuggestion> results, int maxResults = 10)
     {
@@ -271,12 +273,12 @@ public static class ConsoleAutocomplete
             return EXACT_MATCH_BONUS;
 
         if (target.StartsWith(input, StringComparison.OrdinalIgnoreCase))
-            return PREFIX_MATCH_BONUS + input.Length;
+            return Mathf.Min(PREFIX_MATCH_BONUS + input.Length, EXACT_MATCH_BONUS - 1f);
         
         if (target.Contains(input, StringComparison.OrdinalIgnoreCase))
-            return CONTAINS_MATCH_BONUS + input.Length;
+            return Mathf.Min(CONTAINS_MATCH_BONUS + input.Length, PREFIX_MATCH_BONUS - 1f);
 
-        return CalculateSequenceScore(input, target);
+        return Mathf.Min(CalculateSequenceScore(input, target), PREFIX_MATCH_BONUS - 1f);
     }
     
     private static float CalculateSequenceScore(string input, string target)
@@ -289,8 +291,12 @@ public static class ConsoleAutocomplete
         {
             if (CharsEqual(target[targetIndex], input[inputIndex]))
             {
+                score += SEQUENCE_MATCH_CHARACTER_BONUS;
+                
+                if (consecutiveMatches > 0)
+                    score += SEQUENCE_MATCH_CONSECUTIVE_BONUS;
+                
                 consecutiveMatches++;
-                score += SEQUENCE_MATCH_BONUS * consecutiveMatches;
                 inputIndex++;
             }
             else
