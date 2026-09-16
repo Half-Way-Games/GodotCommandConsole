@@ -10,7 +10,8 @@ public static class ConsoleAutocomplete
     private const float EXACT_MATCH_BONUS = 100f;
     private const float PREFIX_MATCH_BONUS = 50f;
     private const float CONTAINS_MATCH_BONUS = 25f;
-    private const float SEQUENCE_MATCH_BONUS = 10f;
+    private const float SEQUENCE_MATCH_CHARACTER_BONUS = 1f;
+    private const float SEQUENCE_MATCH_CONSECUTIVE_BONUS = 2f;
 
     public static void FillSuggestions(string input, List<AutocompleteSuggestion> results, int maxResults = 10)
     {
@@ -289,8 +290,12 @@ public static class ConsoleAutocomplete
         {
             if (CharsEqual(target[targetIndex], input[inputIndex]))
             {
+                score += SEQUENCE_MATCH_CHARACTER_BONUS;
+                
+                if (consecutiveMatches > 0)
+                    score += SEQUENCE_MATCH_CONSECUTIVE_BONUS;
+                
                 consecutiveMatches++;
-                score += SEQUENCE_MATCH_BONUS * consecutiveMatches;
                 inputIndex++;
             }
             else
