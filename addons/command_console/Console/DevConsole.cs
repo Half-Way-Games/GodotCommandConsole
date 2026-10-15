@@ -18,15 +18,8 @@ public static class DevConsole
         foreach (var assembly in assemblies)
         {
             // Skip system, test platform, and compiler assemblies to maximize performance and avoid type load errors
-            var name = assembly.FullName ?? "";
-            if (name.StartsWith("System") || 
-                name.StartsWith("Microsoft") || 
-                name.StartsWith("GdUnit4") || 
-                name.StartsWith("mscorlib") || 
-                name.StartsWith("GodotSharp"))
-            {
-                continue;
-            }
+           if (ShouldSkipAssembly(assembly))
+               continue;
             
             try
             {
@@ -39,9 +32,10 @@ public static class DevConsole
                 foreach (var loadedType in exception.Types.Where(t => t != null))
                     RegisterCommandsFromType(loadedType);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 // Safely skip any assembly that cannot be inspected
+                Log.Error($"Error registering commands for '{assembly.GetName().Name}': {e.Message}");
             }
         }
         
@@ -77,6 +71,55 @@ public static class DevConsole
     {
         return commands.GetValueOrDefault(name.ToLower());
     }
+
+    private static bool ShouldSkipAssembly(Assembly assembly)
+    {
+        var assemblyName = assembly.GetName().Name;
+
+        if (string.IsNullOrWhiteSpace(assemblyName))
+            return true;
+        
+        if (IsKnownFrameworkOrAssembly(assemblyName))
+            return true;
+       
+        return !CouldContainConsoleCommands(assembly);
+    }
+
+    private static bool IsKnownFrameworkOrAssembly(string assemblyName)
+    {
+        string[] exactNames =
+        [
+            "mscorlib",
+            "netstandard",
+            "GodotSharp",
+            "GdUnit4",
+            "gdUnit4.api",
+            "gdUnit4.test.adapter",
+            "Microsoft.NET.Test.Sdk"
+        ];
+
+        string[] dottedPrefixes =
+        [
+            "System.",
+            "Microsoft.",
+            "Godot.",
+            "GodotSharp.",
+            "GdUnit4.",
+            "gdUnit4."
+        ];
+
+        return exactNames.Contains(assemblyName, StringComparer.OrdinalIgnoreCase)
+            || dottedPrefixes.Any(prefix => assemblyName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool CouldContainConsoleCommands(Assembly assembly)
+    {
+        var commandAssemblyName = typeof(ConsoleCommandAttribute).Assembly.GetName().Name;
+        var currentAssemblyName = assembly.GetName().Name;
+        
+        return string.Equals(currentAssemblyName, commandAssemblyName, StringComparison.OrdinalIgnoreCase) 
+            || assembly.GetReferencedAssemblies().Any(reference => string.Equals(reference.Name, commandAssemblyName, StringComparison.OrdinalIgnoreCase));
+    }
     
     private static void RegisterCommandsFromType(Type type)
     {
@@ -91,9 +134,10 @@ public static class DevConsole
                 {
                     attribute = method.GetCustomAttribute<ConsoleCommandAttribute>();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     // Skip methods whose attributes or parameter types cannot be loaded
+                    Log.Warning($"Failed to get attribute  for '{type.FullName}': {e.Message}");
                     continue;
                 }
 
@@ -116,9 +160,10 @@ public static class DevConsole
                 Log.Warning($"Duplicate command: '{commandInfo.FullName}' ignored");
             }
         }
-        catch (Exception )
+        catch (Exception e)
         {
             // Safely skip types that fail method reflection
+            Log.Error($"Error registering commands for '{type.FullName}': {e.Message}");
         }
     }
 
