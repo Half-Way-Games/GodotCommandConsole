@@ -1,5 +1,9 @@
 name: Release Addon
 
+permissions:
+  contents: write
+  packages: write
+
 on:
   push:
     tags:
