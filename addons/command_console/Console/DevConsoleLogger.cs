@@ -8,6 +8,8 @@ namespace HWG.CommandConsole.Console;
 
 public static class DevConsoleLogger
 {
+    private static bool logToGodotConsole = true;
+    
     public enum LogLevel
     {
         Debug,
@@ -58,6 +60,11 @@ public static class DevConsoleLogger
         };
         MessageLogged?.Invoke(entry);
     }
+
+    public static void LogToGodotConsole(bool shouldLog)
+    {
+        logToGodotConsole = shouldLog;
+    }
     
     private static void LogMessage(LogLevel level, string message, string memberName = "", string sourceFilePath = "", int sourceLineNumber = 0)
     {
@@ -74,6 +81,8 @@ public static class DevConsoleLogger
         
         MessageLogged?.Invoke(entry);
         
+        if (!logToGodotConsole)
+            return;
         // Also send to Godot's console for development and debugging purposes
         switch (level)
         {

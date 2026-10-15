@@ -5,7 +5,6 @@ namespace HWG.CommandConsole.Console;
 
 public sealed record ConsoleInputParseResult
 {
-    public required string OriginalInput { get; init; }
     public required IReadOnlyList<string> Tokens { get; init; }
     public bool EndsWithWhitespace {get; init;}
     public bool HasUnclosedQuotes {get; init;}
@@ -30,14 +29,6 @@ public sealed record ConsoleInputParseResult
     }
     }
 
-    public string CurrentToken
-    { get {
-        if (Tokens.Count == 0 || EndsWithWhitespace)
-            return "";
-
-        return Tokens[^1];
-    }
-    }
 }
 
 public static class ConsoleInputParser
@@ -57,7 +48,6 @@ public static class ConsoleInputParser
             if (escapeNext)
             {
                 current += character;
-                tokenStarted = true;
                 escapeNext = false;
                 continue;
             }
@@ -66,7 +56,6 @@ public static class ConsoleInputParser
             {
                 case '\\' when inQuotes:
                     escapeNext = true;
-                    tokenStarted = true;
                     break;
                 
                 case '"':
@@ -95,7 +84,6 @@ public static class ConsoleInputParser
 
         return new ConsoleInputParseResult
         {
-            OriginalInput = input,
             Tokens = tokens,
             EndsWithWhitespace = input.Length > 0 && char.IsWhiteSpace(input[^1]),
             HasUnclosedQuotes = inQuotes
