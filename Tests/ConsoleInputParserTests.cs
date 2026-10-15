@@ -5,6 +5,7 @@ namespace CommandConsole.Tests;
 [TestSuite]
 public class ConsoleInputParserTests
 {
+    [TestCase]
     public void Parse_SimpleCommand_ReturnsCorrectTokens()
     {
         string input = "spawn enemy 5";
