@@ -30,7 +30,11 @@ project/assembly_name="Command Console"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/command_console/plugin.cfg")
+enabled=PackedStringArray("res://addons/command_console/plugin.cfg", "res://addons/gdUnit4/plugin.cfg")
+
+[gdunit4]
+
+settings/test/test_lookup_folder="Tests"
 
 [input]
 
