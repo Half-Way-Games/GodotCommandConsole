@@ -17,6 +17,17 @@ public static class DevConsole
 
         foreach (var assembly in assemblies)
         {
+            // Skip system, test platform, and compiler assemblies to maximize performance and avoid type load errors
+            var name = assembly.FullName ?? "";
+            if (name.StartsWith("System") || 
+                name.StartsWith("Microsoft") || 
+                name.StartsWith("GdUnit4") || 
+                name.StartsWith("mscorlib") || 
+                name.StartsWith("GodotSharp"))
+            {
+                continue;
+            }
+            
             try
             {
                 var types = assembly.GetTypes();
@@ -27,6 +38,10 @@ public static class DevConsole
             {
                 foreach (var loadedType in exception.Types.Where(t => t != null))
                     RegisterCommandsFromType(loadedType);
+            }
+            catch (Exception)
+            {
+                // Safely skip any assembly that cannot be inspected
             }
         }
         
@@ -65,28 +80,45 @@ public static class DevConsole
     
     private static void RegisterCommandsFromType(Type type)
     {
-        var methods = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
-
-        foreach (var method in methods)
+        try
         {
-            var attribute = method.GetCustomAttribute<ConsoleCommandAttribute>();
-            if (attribute == null) continue;
-            
-            var commandInfo = new CommandInfo
+            var methods = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+
+            foreach (var method in methods)
             {
-                Name = method.Name,
-                Description = attribute.Description,
-                Prefix = attribute.Prefix,
-                Method = method,
-                Parameters = method.GetParameters(),
-                FullName = string.IsNullOrEmpty(attribute.Prefix) ? method.Name : $"{attribute.Prefix}.{method.Name}"
-            };
+                ConsoleCommandAttribute attribute;
+                try
+                {
+                    attribute = method.GetCustomAttribute<ConsoleCommandAttribute>();
+                }
+                catch (Exception)
+                {
+                    // Skip methods whose attributes or parameter types cannot be loaded
+                    continue;
+                }
 
-            var key = commandInfo.FullName.ToLower();
-            if (commands.TryAdd(key, commandInfo))
-                continue;
+                if (attribute == null) continue;
+            
+                var commandInfo = new CommandInfo
+                {
+                    Name = method.Name,
+                    Description = attribute.Description,
+                    Prefix = attribute.Prefix,
+                    Method = method,
+                    Parameters = method.GetParameters(),
+                    FullName = string.IsNullOrEmpty(attribute.Prefix) ? method.Name : $"{attribute.Prefix}.{method.Name}"
+                };
 
-            Log.Warning($"Duplicate command: '{commandInfo.FullName}' ignored");
+                var key = commandInfo.FullName.ToLower();
+                if (commands.TryAdd(key, commandInfo))
+                    continue;
+
+                Log.Warning($"Duplicate command: '{commandInfo.FullName}' ignored");
+            }
+        }
+        catch (Exception )
+        {
+            // Safely skip types that fail method reflection
         }
     }
 
